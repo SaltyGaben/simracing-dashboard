@@ -34,6 +34,9 @@ const tableData: Record<string, TableData[]> = {};
 props.telemetryAll.forEach(t => {
     const driver = props.drivers.find(d => d.carIdx === t.carIdx);
     if (driver) {
+        if (t.lap < 0 || t.lapsCompleted < 0 || t.lastLapTime < 0 || t.bestLapTime < 0) {
+            return
+        }
         const data: TableData = {
             name: driver.userName,
             teamName: driver.teamName,
@@ -81,7 +84,7 @@ const columns: TableColumn<TableData>[] = [
 <template>
     <UCard>
         <template #header>
-            <h1 class="text-3xl font-medium">Standings</h1>
+            <h1 class="text-4xl font-medium">Standings</h1>
         </template>
 
         <div v-for="(className, index) in classes" :key="className" class="flex flex-col">

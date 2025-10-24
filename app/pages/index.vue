@@ -20,6 +20,7 @@ const exampleData = {
             position: 1,
             positionClass: 1,
             lapsCompleted: 15,
+            _creationTime: 1719157800,
         },
         {
             carIdx: 1,
@@ -32,6 +33,7 @@ const exampleData = {
             position: 1,
             positionClass: 1,
             lapsCompleted: 15,
+            _creationTime: 1719157900,
         },
         {
             carIdx: 1,
@@ -44,6 +46,7 @@ const exampleData = {
             position: 1,
             positionClass: 1,
             lapsCompleted: 15,
+            _creationTime: 1719158000,
         },
         {
             carIdx: 1,
@@ -56,6 +59,7 @@ const exampleData = {
             position: 1,
             positionClass: 1,
             lapsCompleted: 15,
+            _creationTime: 1719158100,
         },
         {
             carIdx: 1,
@@ -68,6 +72,7 @@ const exampleData = {
             position: 1,
             positionClass: 1,
             lapsCompleted: 15,
+            _creationTime: 1719158200,
         },
         {
             carIdx: 1,
@@ -80,6 +85,7 @@ const exampleData = {
             position: 1,
             positionClass: 1,
             lapsCompleted: 15,
+            _creationTime: 1719158300,
         },
         {
             carIdx: 1,
@@ -87,11 +93,12 @@ const exampleData = {
             fuelLevel: 131.2,
             incidentsTeam: 2,
             incidentsDriver: 1,
-            bestLapTime: 82.456,
-            lastLapTime: 83.123,
+            lastLapTime: 236.445,
+            bestLapTime: 225.789,
             position: 1,
             positionClass: 1,
             lapsCompleted: 15,
+            _creationTime: 1719158400,
         }
     ],
     telemetryAll: [
@@ -104,6 +111,7 @@ const exampleData = {
             lastLapTime: 83.123,
             bestLapTime: 82.456,
             class: "GT3",
+            _creationTime: 1719158400,
         },
         {
             carIdx: 2,
@@ -114,6 +122,7 @@ const exampleData = {
             lastLapTime: 83.445,
             bestLapTime: 82.789,
             class: "GT3",
+            _creationTime: 1719158400,
         },
         {
             carIdx: 3,
@@ -124,6 +133,7 @@ const exampleData = {
             lastLapTime: 83.123,
             bestLapTime: 82.456,
             class: "GTP",
+            _creationTime: 1719158400,
         },
         {
             carIdx: 4,
@@ -131,9 +141,10 @@ const exampleData = {
             lapsCompleted: 15,
             position: 2,
             positionClass: 2,
-            lastLapTime: 83.445,
-            bestLapTime: 82.789,
+            lastLapTime: 236.445,
+            bestLapTime: 225.789,
             class: "GTP",
+            _creationTime: 1719158400,
         },
     ]
 }
@@ -153,6 +164,7 @@ const { data: drivers, isPending: driversPending } = useConvexQuery(api.drivers.
     <div v-if="!allPending && !teamPending && !driversPending" class="p-4 grid grid-cols-3 gap-4 h-full">
         <div class="flex flex-col gap-4 mb-8 col-span-2">
             <Fuel :drivers="exampleData.drivers!" :telemetry-team="exampleData.telemetryTeam!" />
+            <Team :drivers="exampleData.drivers!" :telemetry-team="exampleData.telemetryTeam!" />
         </div>
         <div class="col-span-1 flex flex-col gap-4 mb-8">
             <Standings :drivers="exampleData.drivers!" :telemetryAll="exampleData.telemetryAll!" />

@@ -63,10 +63,11 @@ const averageFuelUsage = computed(() => calculateFuelUsage.value.rollingAverageF
 <template>
     <UCard>
         <template #header>
-            <h1 class="text-3xl font-medium">Standings</h1>
+            <h1 class="text-4xl font-medium">Fuel Usage</h1>
         </template>
         <div>
-            <AreaChart :data="AreaChartData" :categories="categories" :y-axis-label="'Fuel Used (L)'" :height="300" />
+            <AreaChart :data="AreaChartData" :categories="categories" y-label="'Fuel Used (L)'" x-label="Laps"
+                :height="300" />
         </div>
     </UCard>
 </template>
