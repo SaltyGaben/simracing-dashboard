@@ -7,9 +7,9 @@ const { data: drivers, isPending: driversPending } = useConvexQuery(api.drivers.
 </script>
 
 <template>
-    <div class="flex flex-row items-baseline gap-2 p-4">
+    <div class="flex flex-row items-baseline gap-2 p-4 border-b">
         <UIcon name="i-lucide-flag" size="30" />
-        <h1 class="text-4xl mb-8">
+        <h1 class="text-4xl">
             Sim Racing Dashboard
         </h1>
     </div>

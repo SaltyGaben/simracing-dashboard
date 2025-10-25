@@ -33,14 +33,18 @@ const getClassColor = (className: string, type: 'bg' | 'text') => {
     return classColors[className]?.[type] || (type === 'bg' ? 'bg-gray-500' : 'text-gray-500')
 }
 
-const classes = Array.from(new Set(props.telemetryAll.map(d => classMap[d.class]))).sort();
+const classes = ['GTP', 'LMP2', 'GT3'];
 
-const tableData: Record<string, TableData[]> = {};
+const tableData: Record<string, TableData[]> = {
+    "GT3": [],
+    "LMP2": [],
+    "GTP": [],
+};
 
 props.telemetryAll.forEach(t => {
     const driver = props.drivers.find(d => d.carIdx === t.carIdx);
     if (driver) {
-        if (t.lap < 0 || t.lapsCompleted < 0 || t.lastLapTime < 0 || t.bestLapTime < 0) {
+        if (t.lap < 0 || t.lapsCompleted < 0) {
             return
         }
         const data: TableData = {
@@ -100,7 +104,7 @@ const columns: TableColumn<TableData>[] = [
 </script>
 
 <template>
-    <UCard>
+    <UCard variant="subtle">
         <template #header>
             <h1 class="text-4xl font-medium">Standings</h1>
         </template>

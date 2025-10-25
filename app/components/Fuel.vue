@@ -12,62 +12,121 @@ interface AreaChartItem {
     fuelUsed: number
 }
 
-const categories: Record<string, BulletLegendItemInterface> = {
-    fuelUsed: { name: 'Fuel Used', color: '#ee2828' },
+const categories = computed(() => {
+  const result: Record<string, { name: string; color: string }> = {}
+  driverKeys.value.forEach((driver, idx) => {
+    result[driver] = {
+      name: driver,
+      color: pickColor(idx)  // some function to pick distinct color
+    }
+  })
+  return result
+})
+
+const driverKeys = computed(() => {
+    const carIdxs = new Set(props.telemetryTeam.map(c => c.carIdx))
+
+    // Return unique driver names for drivers that have telemetry entries
+    return Array.from(new Set(props.drivers
+        .filter(d => carIdxs.has(d.carIdx))
+        .map(d => d.userName)
+    ))
+})
+
+function pickColor(idx: number) {
+  const palette = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b', '#6b7280']
+  return palette[idx % palette.length] ?? '#3b82f6'
 }
 
 const calculateFuelUsage = computed(() => {
-    const ROLLING_AVG_LAPS = 5;
-    const fuelData: AreaChartItem[] = [];
-    const sortedTelemetry = [...props.telemetryTeam].sort((a, b) => a.lap - b.lap);
+  const { telemetryTeam, drivers } = props;
 
-    let previousFuel = sortedTelemetry[0]?.fuelLevel;
-    let fuelUsageHistory: number[] = [];
+  const keys = driverKeys.value;
 
-    for (let i = 1; i < sortedTelemetry.length; i++) {
-        const current = sortedTelemetry[i];
+  const driverLapMap: Record<string, Map<number, TelemetryTeam>> = {};
+  keys.forEach(driverName => {
+    driverLapMap[driverName] = new Map<number, TelemetryTeam>();
+  });
 
-        if (previousFuel !== undefined) {
-            const fuelUsed = previousFuel - current.fuelLevel;
+  telemetryTeam.forEach(entry => {
+    const driverObj = drivers.find(d => d.carIdx === entry.carIdx);
+    if (!driverObj) return;
+    const driverName = driverObj.userName;
+    if (!driverLapMap[driverName]) return;
 
-            if (fuelUsed > 0.1 && fuelUsed < 100) {
-                fuelUsageHistory.push(fuelUsed);
-                if (fuelUsageHistory.length > ROLLING_AVG_LAPS) {
-                    fuelUsageHistory.shift();
-                }
-
-                fuelData.push({
-                    lap: current.lap,
-                    fuelUsed: fuelUsed
-                });
-            }
-        }
-
-        previousFuel = current.fuelLevel;
+    const lap = entry.lap;
+    const lapMap = driverLapMap[driverName];
+    const existing = lapMap.get(lap);
+    if (!existing) {
+      lapMap.set(lap, entry);
+    } else {
+      const existingTime = new Date(existing._creationTime).getTime();
+      const entryTime = new Date(entry._creationTime).getTime();
+      if (entryTime < existingTime) {
+        lapMap.set(lap, entry);
+      }
     }
+  });
 
-    const rollingAverageFuelPerLap = fuelUsageHistory.length > 0
-        ? fuelUsageHistory.reduce((sum, val) => sum + val, 0) / fuelUsageHistory.length
-        : 0;
+  const allLapsSet = new Set<number>();
+  keys.forEach(driverName => {
+    driverLapMap[driverName].forEach((_, lap) => {
+      allLapsSet.add(lap);
+    });
+  });
+  const allLaps = Array.from(allLapsSet).sort((a,b) => a - b);
 
-    return {
-        fuelData,
-        rollingAverageFuelPerLap
-    };
+  const chartData: Array<Record<string, any>> = allLaps.map(lap => {
+    const row: Record<string, any> = { lap };
+    keys.forEach(driverName => {
+      row[driverName] = null;
+    });
+    return row;
+  });
+
+  keys.forEach(driverName => {
+    const lapMap = driverLapMap[driverName];
+    const sortedEntries = Array.from(lapMap.values()).sort((a,b) => a.lap - b.lap);
+    let prevFuelLevel: number | undefined = undefined;
+
+    sortedEntries.forEach(entry => {
+      const lap = entry.lap;
+      const fuelLevel = entry.fuelLevel;
+      if (prevFuelLevel !== undefined) {
+        const used = prevFuelLevel - fuelLevel;
+        if (used > 0.1 && used < 100) {
+          const row = chartData.find(r => r.lap === lap);
+          if (row) {
+            row[driverName] = used;
+          }
+        }
+      }
+      prevFuelLevel = fuelLevel;
+    });
+  });
+
+  return {
+    chartData,
+  };
 });
 
-const AreaChartData = computed(() => calculateFuelUsage.value.fuelData);
-const averageFuelUsage = computed(() => calculateFuelUsage.value.rollingAverageFuelPerLap);
+const AreaChartData = computed(() => calculateFuelUsage.value.chartData);
 </script>
 
 <template>
-    <UCard>
+    <UCard variant="subtle">
         <template #header>
             <h1 class="text-4xl font-medium">Fuel Usage</h1>
         </template>
         <div>
-            <AreaChart :data="AreaChartData" :categories="categories" y-label="'Fuel Used (L)'" x-label="Laps"
-                :height="300" />
+            <AreaChart 
+                :data="AreaChartData" 
+                :categories="categories" 
+                y-label="'Fuel Used (L)'" 
+                x-label="Laps"
+                :height="300" 
+                :legend-position="LegendPosition.TopRight"
+            />
         </div>
     </UCard>
 </template>

@@ -38,6 +38,7 @@ const getLatestTelemetry = () => {
 
 const formatTime = (time: number) => {
     if (time === 0) return '0:00.000';
+    if (time === -1) return 'Invalid';
 
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -48,14 +49,14 @@ const formatTime = (time: number) => {
 </script>
 
 <template>
-    <UCard>
+    <UCard variant="subtle">
         <template #header>
             <h1 class="text-4xl font-medium">Team Statistics</h1>
         </template>
         <div class="grid grid-cols-3 gap-4">
             <div class="flex flex-col gap-4 col-span-2">
                 <h1 class="text-2xl font-medium">Drivers</h1>
-                <UCard v-for="driver in teamDrivers" :key="driver.carIdx" class="mb-4">
+                <UCard v-for="driver in teamDrivers" :key="driver.carIdx" class="transition hover:bg-slate-800/60 hover:scale-[1.01] mb" >
                     <div class="flex flex-col gap-2 items-baseline">
                         <div class="flex flex-row gap-2 items-baseline justify-between w-full">
                             <h2 class="text-xl font-medium">{{ driver.userName }}</h2>
@@ -91,11 +92,11 @@ const formatTime = (time: number) => {
 
             <div class="flex flex-col gap-4">
                 <h1 class="text-2xl font-medium">Team Statistics</h1>
-                <UCard>
+                <UCard class="transition hover:bg-slate-800/60 hover:scale-[1.01]">
                     <h1 class="text-xl">Incidents</h1>
                     <h1 class="font-bold text-red-500 text-xl">{{ getLatestTelemetry()?.incidentsTeam ?? 'N/A' }}</h1>
                 </UCard>
-                <UCard>
+                <UCard class="transition hover:bg-slate-800/60 hover:scale-[1.01]">
                     <h1 class="text-xl">Fastest Lap Overall</h1>
                     <h1 class="font-bold text-purple-500 text-xl">{{ formatTime(getLatestTelemetry()?.bestLapTime ?? 0)
                     }}</h1>

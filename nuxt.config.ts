@@ -10,4 +10,5 @@ export default defineNuxtConfig({
     url: process.env.CONVEX_URL
   },
   devtools: { enabled: true }
+
 })
