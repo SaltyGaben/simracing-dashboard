@@ -10,23 +10,12 @@ const props = defineProps<{
 
 const teamDrivers = computed(() => {
     return props.drivers.filter(driver =>
-        props.telemetryTeam.some(telemetry => telemetry.carIdx === driver.carIdx)
+        props.telemetryTeam.some(telemetry => telemetry.userID === driver.userID)
     );
 });
 
-const getIncidents = (carIdx: number) => {
-    const telemetry = props.telemetryTeam.filter(t => t.carIdx === carIdx);
-    if (telemetry.length === 0) return { team: 0, driver: 0 };
-
-    const latestTelemetry = telemetry.reduce((latest, current) =>
-        current._creationTime > latest._creationTime ? current : latest
-    );
-
-    return latestTelemetry.incidentsDriver;
-};
-
-const getLatestTelemetryDriver = (carIdx: number) => {
-    const telemetry = props.telemetryTeam.filter(t => t.carIdx === carIdx);
+const getLatestTelemetryDriver = (userId: number) => {
+    const telemetry = props.telemetryTeam.filter(t => t.userID === userId);
     if (telemetry.length === 0) return null;
 
     return telemetry.sort((a, b) => b._creationTime - a._creationTime)[0];
@@ -56,32 +45,33 @@ const formatTime = (time: number) => {
         <div class="grid grid-cols-3 gap-4">
             <div class="flex flex-col gap-4 col-span-2">
                 <h1 class="text-2xl font-medium">Drivers</h1>
-                <UCard v-for="driver in teamDrivers" :key="driver.carIdx" class="transition hover:bg-slate-800/60 hover:scale-[1.01] mb" >
+                <UCard v-for="driver in teamDrivers" :key="driver.carIdx"
+                    class="transition hover:bg-slate-800/60 hover:scale-[1.01] mb">
                     <div class="flex flex-col gap-2 items-baseline">
                         <div class="flex flex-row gap-2 items-baseline justify-between w-full">
                             <h2 class="text-xl font-medium">{{ driver.userName }}</h2>
                             <span class="bg-red-400 text-black px-2 py-1 rounded-md">Incidents:
-                                {{ getLatestTelemetryDriver(driver.carIdx)?.incidentsDriver ?? 'N/A' }}
+                                {{ getLatestTelemetryDriver(driver.userID)?.incidentsDriver ?? 'N/A' }}
                             </span>
                         </div>
                         <div class="flex flex-row gap-10 items-baseline">
                             <span>
                                 <p>Fastest Lap</p>
                                 <p class="font-semibold text-purple-500">{{
-                                    formatTime(getLatestTelemetryDriver(driver.carIdx)?.bestLapTime ?? 0)
-                                }}</p>
+                                    formatTime(getLatestTelemetryDriver(driver.userID)?.bestLapTime ?? 0)
+                                    }}</p>
                             </span>
 
                             <span>
                                 <p>Last Lap</p>
                                 <p class="font-semibold">{{
-                                    formatTime(getLatestTelemetryDriver(driver.carIdx)?.lastLapTime ??
+                                    formatTime(getLatestTelemetryDriver(driver.userID)?.lastLapTime ??
                                         0) }}</p>
                             </span>
 
                             <span>
                                 <p>Laps Completed</p>
-                                <p class="font-semibold"> {{ getLatestTelemetryDriver(driver.carIdx)?.lapsCompleted ??
+                                <p class="font-semibold"> {{ getLatestTelemetryDriver(driver.userID)?.lapsCompleted ??
                                     'N/A' }}
                                 </p>
                             </span>
@@ -99,7 +89,7 @@ const formatTime = (time: number) => {
                 <UCard class="transition hover:bg-slate-800/60 hover:scale-[1.01]">
                     <h1 class="text-xl">Fastest Lap Overall</h1>
                     <h1 class="font-bold text-purple-500 text-xl">{{ formatTime(getLatestTelemetry()?.bestLapTime ?? 0)
-                    }}</h1>
+                        }}</h1>
                 </UCard>
             </div>
 

@@ -15,8 +15,9 @@ const { data: drivers, isPending: driversPending } = useConvexQuery(api.drivers.
     </div>
     <div v-if="!allPending && !teamPending && !driversPending" class="p-4 grid grid-cols-3 gap-4 h-full">
         <div class="flex flex-col gap-4 mb-8 col-span-2">
-            <Fuel :drivers="drivers!" :telemetry-team="telemetryTeam!" />
             <Team :drivers="drivers!" :telemetry-team="telemetryTeam!" />
+            <Fuel :drivers="drivers!" :telemetry-team="telemetryTeam!" />
+            <LapTimes :drivers="drivers!" :telemetry-team="telemetryTeam!" />
         </div>
         <div class="col-span-1 flex flex-col gap-4 mb-8">
             <Standings :drivers="drivers!" :telemetryAll="telemetryAll!" />

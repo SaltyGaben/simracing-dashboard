@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { table } from '#build/ui';
 import type { TableColumn } from '@nuxt/ui';
 import type { Driver } from '~~/convex/drivers.ts';
 import type { TelemetryAll } from '~~/convex/telemetry';
