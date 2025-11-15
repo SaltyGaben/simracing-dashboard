@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { Driver } from '~~/convex/drivers';
 import type { TelemetryTeam } from '~~/convex/telemetry';
 
 const props = defineProps<{
-  drivers: Driver[],
   telemetryTeam: TelemetryTeam[]
 }>()
 
@@ -24,13 +22,10 @@ const categories = computed(() => {
 })
 
 const driverKeys = computed(() => {
-  const userIds = new Set(props.telemetryTeam.map(c => c.userID))
+  const userNames = new Set(props.telemetryTeam.map(c => c.userName))
 
-  // Return unique driver names for drivers that have telemetry entries
-  return Array.from(new Set(props.drivers
-    .filter(d => userIds.has(d.userID))
-    .map(d => d.userName)
-  ))
+  // Return unique driver names for drivers in telemetryTeam
+  return Array.from(userNames)
 })
 
 const pickColor = (idx: number) => {
@@ -39,7 +34,7 @@ const pickColor = (idx: number) => {
 }
 
 const calculateFuelUsage = computed(() => {
-  const { telemetryTeam, drivers } = props;
+  const { telemetryTeam } = props;
 
   const keys = driverKeys.value;
 
@@ -49,9 +44,7 @@ const calculateFuelUsage = computed(() => {
   });
 
   telemetryTeam.forEach(entry => {
-    const driverObj = drivers.find(d => d.userID === entry.userID);
-    if (!driverObj) return;
-    const driverName = driverObj.userName;
+    const driverName = entry.userName;
     if (!driverLapMap[driverName]) return;
 
     const lap = entry.lap;

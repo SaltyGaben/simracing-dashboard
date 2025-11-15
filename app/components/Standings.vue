@@ -24,6 +24,7 @@ const classColors: Record<string, { bg: string, text: string }> = {
 
 const classMap: Record<number, string> = {
     4011: 'GT3',
+    4091: 'GT3',
     4029: 'GTP',
     2423: 'LMP2',
 }

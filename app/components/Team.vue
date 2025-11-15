@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import type { Driver } from '~~/convex/drivers';
 import type { TelemetryTeam } from '~~/convex/telemetry';
 
 
 const props = defineProps<{
-    drivers: Driver[],
     telemetryTeam: TelemetryTeam[]
 }>()
 
 const teamDrivers = computed(() => {
-    return props.drivers.filter(driver =>
-        props.telemetryTeam.some(telemetry => telemetry.userID === driver.userID)
-    );
+    const uniqueDrivers = new Map<number, { userID: number; userName: string; carIdx: number }>();
+
+    props.telemetryTeam.forEach(t => {
+        if (!uniqueDrivers.has(t.userID)) {
+            uniqueDrivers.set(t.userID, {
+                userID: t.userID,
+                userName: t.userName,
+                carIdx: t.carIdx
+            });
+        }
+    });
+
+    return Array.from(uniqueDrivers.values());
 });
 
 const getLatestTelemetryDriver = (userId: number) => {

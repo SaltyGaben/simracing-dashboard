@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { Driver } from '~~/convex/drivers';
 import type { TelemetryTeam } from '~~/convex/telemetry';
 
 const props = defineProps<{
-    drivers: Driver[],
     telemetryTeam: TelemetryTeam[]
 }>()
 
@@ -17,20 +15,17 @@ const categories = computed(() => {
     driverKeys.value.forEach((driver, idx) => {
         result[driver] = {
             name: driver,
-            color: pickColor(idx)  // some function to pick distinct color
+            color: pickColor(idx)
         }
     })
     return result
 })
 
 const driverKeys = computed(() => {
-    const carIdxs = new Set(props.telemetryTeam.map(c => c.userID))
+    const userNames = new Set(props.telemetryTeam.map(c => c.userName))
 
-    // Return unique driver names for drivers that have telemetry entries
-    return Array.from(new Set(props.drivers
-        .filter(d => carIdxs.has(d.userID))
-        .map(d => d.userName)
-    ))
+    // Return unique driver names for drivers in telemetryTeam
+    return Array.from(userNames)
 })
 
 const pickColor = (idx: number) => {
@@ -39,8 +34,7 @@ const pickColor = (idx: number) => {
 }
 
 const formatTime = (time: number) => {
-    if (time === 0) return '0:00.000';
-    if (time === -1) return 'Invalid';
+    if (time <= 1) return 'Invalid';
 
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -51,7 +45,7 @@ const formatTime = (time: number) => {
 
 const calculateLapTimes = computed(() => {
 
-    const { telemetryTeam, drivers } = props;
+    const { telemetryTeam } = props;
 
     const keys = driverKeys.value;
 
@@ -64,9 +58,7 @@ const calculateLapTimes = computed(() => {
         // Filter out entries with invalid lap times
         if (entry.lastLapTime === -1 || entry.lastLapTime == null) return;
 
-        const driverObj = drivers.find(d => d.userID === entry.userID);
-        if (!driverObj) return;
-        const driverName = driverObj.userName;
+        const driverName = entry.userName;
         if (!driverLapMap[driverName]) return;
 
         const lap = entry.lap;
