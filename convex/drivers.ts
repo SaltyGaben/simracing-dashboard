@@ -37,3 +37,13 @@ export const upsertDrivers = mutation({
 		}
 	}
 })
+
+export const deleteAllDrivers = mutation({
+	handler: async (ctx) => {
+		const allDrivers = await ctx.db.query('drivers').collect()
+
+		for (const driver of allDrivers) {
+			await ctx.db.delete(driver._id)
+		}
+	}
+})

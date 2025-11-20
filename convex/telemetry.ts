@@ -73,3 +73,17 @@ export const addTelemetry = mutation({
 		}
 	}
 })
+
+export const deleteAllTelemetry = mutation({
+	handler: async (ctx) => {
+		const allTelemetry = await ctx.db.query('telemetry_all').collect()
+		for (const telemetry of allTelemetry) {
+			await ctx.db.delete(telemetry._id)
+		}
+
+		const allTelemetryTeam = await ctx.db.query('telemetry_team').collect()
+		for (const telemetry of allTelemetryTeam) {
+			await ctx.db.delete(telemetry._id)
+		}
+	}
+})
