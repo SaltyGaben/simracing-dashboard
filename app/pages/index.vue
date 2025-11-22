@@ -13,8 +13,8 @@ const { data: drivers, isPending: driversPending } = useConvexQuery(api.drivers.
             Sim Racing Dashboard
         </h1>
     </div>
-    <div v-if="!allPending && !teamPending && !driversPending" class="p-4 grid grid-cols-3 gap-4 h-full">
-        <div class="flex flex-col gap-4 mb-8 col-span-2">
+    <div v-if="!allPending && !teamPending && !driversPending" class="p-4 grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
+        <div class="flex flex-col gap-4 mb-8 col-span-1 lg:col-span-2">
             <Team :telemetry-team="telemetryTeam!" />
             <Fuel :telemetry-team="telemetryTeam!" />
             <LapTimes :telemetry-team="telemetryTeam!" />

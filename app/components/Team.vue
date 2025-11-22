@@ -50,8 +50,8 @@ const formatTime = (time: number) => {
         <template #header>
             <h1 class="text-4xl font-medium">Team Statistics</h1>
         </template>
-        <div class="grid grid-cols-3 gap-4">
-            <div class="flex flex-col gap-4 col-span-2">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-4 col-span-1 lg:col-span-2">
                 <h1 class="text-2xl font-medium">Drivers</h1>
                 <UCard v-for="driver in teamDrivers" :key="driver.carIdx"
                     class="transition hover:bg-slate-800/60 hover:scale-[1.01] mb">
@@ -62,12 +62,12 @@ const formatTime = (time: number) => {
                                 {{ getLatestTelemetryDriver(driver.userID)?.incidentsDriver ?? 'N/A' }}
                             </span>
                         </div>
-                        <div class="flex flex-row gap-10 items-baseline">
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-10 items-baseline">
                             <span>
                                 <p>Fastest Lap</p>
                                 <p class="font-semibold text-purple-500">{{
                                     formatTime(getLatestTelemetryDriver(driver.userID)?.bestLapTime ?? 0)
-                                    }}</p>
+                                }}</p>
                             </span>
 
                             <span>
@@ -97,7 +97,7 @@ const formatTime = (time: number) => {
                 <UCard class="transition hover:bg-slate-800/60 hover:scale-[1.01]">
                     <h1 class="text-xl">Fastest Lap Overall</h1>
                     <h1 class="font-bold text-purple-500 text-xl">{{ formatTime(getLatestTelemetry()?.bestLapTime ?? 0)
-                        }}</h1>
+                    }}</h1>
                 </UCard>
             </div>
 

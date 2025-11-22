@@ -27,6 +27,7 @@ const classMap: Record<number, string> = {
     4091: 'GT3',
     4029: 'GTP',
     2423: 'LMP2',
+    2523: 'LMP2',
 }
 
 const getClassColor = (className: string, type: 'bg' | 'text') => {
@@ -106,7 +107,7 @@ const columns: TableColumn<TableData>[] = [
 <template>
     <UCard variant="subtle">
         <template #header>
-            <h1 class="text-4xl font-medium">Standings</h1>
+            <h1 class="text-2xl md:text-4xl font-medium">Standings</h1>
         </template>
 
         <div v-for="(className, index) in classes" :key="className" class="flex flex-col">
@@ -114,8 +115,10 @@ const columns: TableColumn<TableData>[] = [
                 <div :class="getClassColor(className, 'bg')" class="h-2 w-2 rounded-full" />
                 <h1 :class="getClassColor(className, 'text')" class="text-xl">{{ className }}</h1>
             </span>
-            <UTable v-if="className" :data="tableData[className]" :columns="columns"
-                :class="index != classes.length - 1 ? 'mb-8' : ''" />
+            <div class="overflow-x-auto">
+                <UTable v-if="className" :data="tableData[className]" :columns="columns"
+                    :class="index != classes.length - 1 ? 'mb-8' : ''" />
+            </div>
         </div>
     </UCard>
 </template>
